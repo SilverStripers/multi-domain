@@ -1,6 +1,6 @@
 {
     "name":"silverstripe/multi-domain",
-    "type": "silverstripe-module",
+    "type": "silverstripe-vendormodule",
     "description": "Allows multiple domains to access one CMS instance, mapping them to different sections of the hierarchy",
     "keywords": ["silverstripe"],
     "license": "BSD-3-Clause",
