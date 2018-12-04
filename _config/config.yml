@@ -1,13 +1,14 @@
 ---
 Name: multidomain
 ---
+
 SilverStripe\Core\Injector\Injector:
-  SilverStripe\Control\RequestProcessor:
+  SilverStripe\Control\Director:
     properties:
-      filters:
-        - '%$MultiDomainRequestFilter'
-  MultiDomainRequestFilter:
-    class: SilverStripe\MultiDomain\MultiDomainRequestFilter;
+      Middlewares:
+        MultiDomainMiddleware: %$MultiDomainMiddleware
+  MultiDomainMiddleware:
+    class: 'SilverStripe\MultiDomain\MultiDomainMiddleware'
 
 SilverStripe\MultiDomain\MultiDomain:
   allow_subdomains: false

@@ -2,6 +2,8 @@
 
 namespace SilverStripe\MultiDomain;
 
+use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Object;
 use SilverStripe\MultiDomain\MultiDomainDomain;
 
@@ -12,8 +14,12 @@ use SilverStripe\MultiDomain\MultiDomainDomain;
  * @package  silverstripe-multi-domain
  * @author  Aaron Carlino <aaron@silverstripe.com>
  */
-class MultiDomain extends Object
+class MultiDomain
 {
+    use Injectable;
+
+    use Configurable;
+
     /**
      * The key for the "primary" domain
      *
