@@ -7,6 +7,7 @@
 
 namespace SilverStripe\MultiDomain;
 
+use SilverStripe\CMS\Controllers\ModelAsController;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
@@ -24,24 +25,17 @@ class MultiDomainMiddleware implements HTTPMiddleware
      */
     public function process(HTTPRequest $request, callable $next)
     {
-        // If flush, bypass caching completely in order to delegate to Silverstripe's flush protection
-        if ($request->offsetExists('flush')) {
-            return $next($request);
-        }
-
         foreach (MultiDomain::get_all_domains() as $domain) {
             if (!$domain->isActive()) {
                 continue;
             }
 
-            $url = $this->createNativeURLForDomain($domain);
-//            echo '<pre>'.print_r($request->getURL(), 1);die();
+            $url = $this->createNativeURLForDomain($domain, $request);
             $parts = explode('?', $url);
             $request->setURL($parts[0]);
             $request->match('$URLSegment//$Action//$ID/$OtherID');
         }
         return $next($request);
-//        echo $request->getURL();die();
     }
 
     /**
@@ -52,11 +46,36 @@ class MultiDomainMiddleware implements HTTPMiddleware
      * @param  MultiDomainDomain $domain
      * @return string
      */
-    protected function createNativeURLForDomain(MultiDomainDomain $domain)
+    protected function createNativeURLForDomain(MultiDomainDomain $domain, HTTPRequest $request)
     {
-        return Controller::join_links(
-            Director::baseURL(),
-            $domain->getNativeURL($domain->getRequestUri())
-        );
+        $requestURI = $_SERVER['REQUEST_URI'];
+        if(!$this->isDirectorRoute($request)) {
+            $requestURI = Controller::join_links(
+                Director::baseURL(),
+                $domain->getNativeURL($domain->getRequestUri())
+            );
+        }
+        return $requestURI;
     }
+
+    protected function isDirectorRoute(HTTPRequest $request)
+    {
+        return MultiDomainMiddleware::is_director_route($request);
+    }
+
+    public static function is_director_route(HTTPRequest $request)
+    {
+        $rules = Director::config()->get('rules');
+        $matchedPattern = null;
+        foreach($rules as $pattern => $controllerOptions) {
+            if(($arguments = $request->match($pattern)) !== false) {
+                $matchedPattern = $controllerOptions;
+                break;
+            }
+        }
+        return $matchedPattern != ModelAsController::class;
+    }
+
+
+
 }
