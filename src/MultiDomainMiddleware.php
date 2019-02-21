@@ -8,6 +8,7 @@
 namespace SilverStripe\MultiDomain;
 
 use SilverStripe\CMS\Controllers\ModelAsController;
+use SilverStripe\CMS\Controllers\RootURLController;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
@@ -73,7 +74,8 @@ class MultiDomainMiddleware implements HTTPMiddleware
                 break;
             }
         }
-        return $matchedPattern != ModelAsController::class;
+        return $matchedPattern != ModelAsController::class
+            && $matchedPattern != RootURLController::class;
     }
 
 
