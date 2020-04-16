@@ -7,6 +7,7 @@
 
 namespace SilverStripe\MultiDomain;
 
+use function class_exists;
 use SilverStripe\CMS\Controllers\ModelAsController;
 use SilverStripe\CMS\Controllers\RootURLController;
 use SilverStripe\Control\Controller;
@@ -32,6 +33,7 @@ class MultiDomainMiddleware implements HTTPMiddleware
             }
 
             $url = $this->createNativeURLForDomain($domain, $request);
+
             $parts = explode('?', $url);
             $request->setURL($parts[0]);
             $request->match('$URLSegment//$Action//$ID/$OtherID');
@@ -50,7 +52,10 @@ class MultiDomainMiddleware implements HTTPMiddleware
     protected function createNativeURLForDomain(MultiDomainDomain $domain, HTTPRequest $request)
     {
         $requestURI = $_SERVER['REQUEST_URI'];
-        if(!$this->isDirectorRoute($request)) {
+        if (
+            !class_exists('SilverStripe\CMS\Model\SiteTree') // if cms not installed build the urls via multidomain
+            || !$this->isDirectorRoute($request)
+        ) {
             $requestURI = Controller::join_links(
                 Director::baseURL(),
                 $domain->getNativeURL($domain->getRequestUri())
@@ -61,11 +66,17 @@ class MultiDomainMiddleware implements HTTPMiddleware
 
     protected function isDirectorRoute(HTTPRequest $request)
     {
+        if (!class_exists('SilverStripe\CMS\Model\SiteTree')) {
+            return false;
+        }
         return MultiDomainMiddleware::is_director_route($request);
     }
 
     public static function is_director_route(HTTPRequest $request)
     {
+        if (!class_exists('SilverStripe\CMS\Model\SiteTree')) {
+            return false;
+        }
         $rules = Director::config()->get('rules');
         $matchedPattern = null;
         foreach($rules as $pattern => $controllerOptions) {
