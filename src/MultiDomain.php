@@ -4,8 +4,6 @@ namespace SilverStripe\MultiDomain;
 
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\Core\Object;
-use SilverStripe\MultiDomain\MultiDomainDomain;
 
 /**
  * A utility class that provides several static methods for parsing URLs

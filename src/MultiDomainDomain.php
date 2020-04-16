@@ -6,8 +6,6 @@ use Exception;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\Core\Object;
-use SilverStripe\MultiDomain\MultiDomain;
 
 /**
  * Class definition for an object representing a configured domain
