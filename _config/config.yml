@@ -4,3 +4,7 @@ Name: multidomain
 
 SilverStripe\MultiDomain\MultiDomain:
   allow_subdomains: false
+
+Page:
+  extensions:
+    - SilverStripe\MultiDomain\MultiDomainPageExtension
