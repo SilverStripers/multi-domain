@@ -148,7 +148,6 @@ class MultiDomainDomain
         if ($this->isAllowedPath($url) || $this->isForcedPath($url)) {
             return $url;
         }
-
         return Controller::join_links($this->getURL(), $url);
     }
 
