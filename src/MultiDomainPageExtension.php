@@ -21,7 +21,9 @@ class MultiDomainPageExtension extends DataExtension
                     $serverName == $domain['hostname']
                     && ($resolvesTo = $domain['resolves_to'])
                 ) {
-                    $base = ltrim($base, $resolvesTo);
+                    if (substr($base, 0, strlen($resolvesTo)) == $resolvesTo) {
+                        $base = substr($base, strlen($resolvesTo));
+                    }
                     break;
                 }
             }
