@@ -8,6 +8,11 @@ class MultiDomainPageExtension extends DataExtension
 {
     public function updateRelativeLink(&$base, &$action)
     {
+        self::update_link($base, $action);
+    }
+    
+    public static function update_link(&$base, &$action = null)
+    {
         $domains = MultiDomain::config()->domains;
         if (
             isset($_SERVER['SERVER_NAME'])
